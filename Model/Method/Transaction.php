@@ -78,24 +78,6 @@ abstract class Transaction extends \Az2009\Cielo\Model\Method\Response
     }
 
     /**
-     * Save card token of customer
-     */
-    public function saveCardToken()
-    {
-        $bodyArray = $this->getBody(\Zend\Json\Json::TYPE_ARRAY);
-
-        if ($this->_session->isLoggedIn()
-            && isset($bodyArray['Payment']['CreditCard']['CardToken'])
-            && isset($bodyArray['Payment']['CreditCard']['SaveCard'])
-            && $bodyArray['Payment']['CreditCard']['SaveCard']
-            && $cardToken = $bodyArray['Payment']['CreditCard']['CardToken']
-        ) {
-            $this->getPayment()
-                 ->setCardToken($cardToken);
-        }
-    }
-
-    /**
      * @return array
      */
     public function getTransactionData()

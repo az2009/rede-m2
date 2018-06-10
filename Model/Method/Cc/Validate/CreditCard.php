@@ -34,25 +34,25 @@ class CreditCard extends \Az2009\Cielo\Model\Method\Validate
      * @var array
      */
     protected $_fieldsValidate = [
-        'CardNumber' => [
+        'cardNumber' => [
             'required' => true,
             'maxlength' => 19,
         ],
-        'Holder' => [
+        'cardHolderName' => [
             'required' => true,
-            'maxlength' => 25,
+            'maxlength' => 30,
         ],
-        'ExpirationDate' => [
+        'expirationMonth' => [
             'required' => true,
-            'maxlength' => 7,
+            'maxlength' => 2,
         ],
-        'SecurityCode' => [
+        'expirationYear' => [
             'required' => true,
             'maxlength' => 4,
         ],
-        'Brand' => [
+        'securityCode' => [
             'required' => true,
-            'maxlength' => 10,
+            'maxlength' => 4,
         ]
     ];
 
@@ -92,57 +92,17 @@ class CreditCard extends \Az2009\Cielo\Model\Method\Validate
     ];
 
     /**
-     * check if the request is by card saved token
-     * @return bool
-     */
-    public function isToken()
-    {
-        $payment = $this->getPayment()->getInfoInstance();
-        $ccToken = $payment->getAdditionalInformation('cc_token');
-        if ($ccToken == \Az2009\Cielo\Helper\Data::CARD_TOKEN || empty($ccToken)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * get fields to validate when is request by card saved token
-     */
-    public function getFieldsWhenToken()
-    {
-        $this->_fieldsValidate = [
-            'CardToken' => [
-                'required' => true,
-                'maxlength' => 36,
-            ],
-            'SecurityCode' => [
-                'required' => true,
-                'maxlength' => 4,
-            ],
-            'Brand' => [
-                'required' => true,
-                'maxlength' => 10,
-            ]
-        ];
-    }
-
-    /**
      * validate fields
      * @throws \Az2009\Cielo\Exception\Cc
      */
     public function validate()
     {
-        if ($this->isToken()) {
-            $this->getFieldsWhenToken();
-        }
-
         $params = $this->getRequest();
-        if (!isset($params['Payment']['CreditCard'])) {
+        if (!isset($params['cardNumber'])) {
             throw new \Az2009\Cielo\Exception\Cc(__('Invalid Credit Card Info '));
         }
 
-        $creditCard = $params['Payment']['CreditCard'];
+        $creditCard = $params;
         foreach ($creditCard as $k => $v) {
             $this->required($k,$v, __('Credit Card: '));
             $this->maxLength($k,$v, __('Credit Card: '));
@@ -150,21 +110,6 @@ class CreditCard extends \Az2009\Cielo\Model\Method\Validate
 
         $this->isValidCreditCard($creditCard);
         $this->isValidDueDate($creditCard);
-        $this->isValidToken($creditCard);
-    }
-
-    /**
-     * validate credit card token
-     * @param array $creditCard
-     * @throws \Az2009\Cielo\Exception\Cc
-     */
-    public function isValidToken(Array $creditCard)
-    {
-        if ($this->isToken()
-            && !array_key_exists($creditCard['CardToken'], $this->helper->getCardSavedByCustomer())
-        ) {
-            throw new \Az2009\Cielo\Exception\Cc(__('Invalid Token Credit Card'));
-        }
     }
 
     /**
@@ -173,16 +118,10 @@ class CreditCard extends \Az2009\Cielo\Model\Method\Validate
      */
     public function isValidDueDate(Array $creditCard)
     {
-        if (!$this->isToken()) {
-
-            $date = $creditCard['ExpirationDate'];
-            $date = explode('/', $date);
-
-            if ($date[0] < date('m') && $date[1] <= date('Y')
-                || $date[1] < date('Y')
-            ) {
-                throw new \Az2009\Cielo\Exception\Cc(__('Invalid Due Date of Credit Card'));
-            }
+        if ($creditCard['expirationMonth'] < date('m') && $creditCard['expirationYear'] <= date('Y')
+            || $creditCard['expirationYear'] < date('Y')
+        ) {
+            throw new \Az2009\Cielo\Exception\Cc(__('Invalid Due Date of Credit Card'));
         }
     }
 
@@ -193,11 +132,7 @@ class CreditCard extends \Az2009\Cielo\Model\Method\Validate
      */
     public function isValidCreditCard(Array $creditCard)
     {
-        if (!$this->isToken()
-            && !preg_match(
-                    $this->_ccTypeRegExpList[$creditCard['Brand']], $creditCard['CardNumber']
-                )
-        ) {
+        if (!preg_match($this->_ccTypeRegExpList[$creditCard['Brand']], $creditCard['cardNumber'])) {
             throw new \Az2009\Cielo\Exception\Cc(__('Invalid Credit Card'));
         }
     }

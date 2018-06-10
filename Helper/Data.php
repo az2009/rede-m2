@@ -150,12 +150,12 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function getUriQuery()
     {
         $config = $this->scopeConfig->getValue(
-            'payment/az2009_cielo_core/uri_query_production'
+            'payment/az2009_cielo_core/uri_request_production'
         );
 
         if ($this->getMode() == \Az2009\Cielo\Model\Source\Mode::MODE_STAGE) {
             $config = $this->scopeConfig->getValue(
-                'payment/az2009_cielo_core/uri_query_stage'
+                'payment/az2009_cielo_core/uri_request_stage'
             );
         }
 

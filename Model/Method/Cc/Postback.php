@@ -68,6 +68,7 @@ class Postback extends \Az2009\Cielo\Model\Method\AbstractMethod
         }
 
         $this->getResponse()
+             ->setIsBackground($this->getIsBackground())
              ->process();
     }
 

@@ -16,9 +16,7 @@ namespace Az2009\Cielo\Model\Method\Cc\Request;
 class Payment extends \Magento\Framework\DataObject
 {
 
-    const TYPE = 'CreditCard';
-    const INTEREST = 'ByMerchant';
-    const SAVE_CARD = 'true';
+    const TYPE = 'credit';
 
     /**
      * @var \Az2009\Cielo\Model\Source\Cctype
@@ -65,19 +63,20 @@ class Payment extends \Magento\Framework\DataObject
 
         return $this->setData(
                         [
-                           'Payment' => [
-                               'Type' => Payment::TYPE,
-                               'Amount' => $info->getAmount(),
-                               'ServiceTaxAmount' => 0,
-                               'Installments' => $this->getInstallments(),
-                               'Interest' => Payment::INTEREST,
-                               'Currency' => $this->order->getStoreCurrencyCode(),
-                               'Country' => $this->helper->prepareString($this->helper->getCountryCodeAlpha3($this->billingAddress->getCountryId()), 35, 0),
-                               'Capture' => $info->getAdditionalInformation('can_capture'),
-                               'Authenticate' => false,
-                               'SoftDescriptor' => $this->helper->prepareString($this->getSoftDescriptor(), 13, 0),
-                               'CreditCard' => $this->getCreditCard(),
-                           ]
+                           'kind' => Payment::TYPE,
+                           'Amount' => $info->getAmount(),
+                           'installments' => $this->getInstallments(),
+                           'capture' => $info->getAdditionalInformation('can_capture'),
+                           'softDescriptor' => $this->helper->prepareString($this->getSoftDescriptor(), 13, 0),
+                           'cardNumber' => $this->getInfo()->getAdditionalInformation('cc_number'),
+                           'cardHolderName' => $this->getInfo()->getAdditionalInformation('cc_name'),
+                           'expirationMonth' => $this->getExpMonth(),
+                           'expirationYear' => $this->getExpYear(),
+                           'subscription' => false,
+                           'Origin' => 1,
+                           'distributorAffiliation' => $this->helper->getMerchantId(),
+                           'securityCode' => $this->getInfo()->getAdditionalInformation('cc_cid'),
+                           'Brand' => $this->_cctype->getBrandFormatCielo($this->getInfo()->getAdditionalInformation('cc_type'))
                         ]
                       )->toArray();
 
@@ -113,69 +112,22 @@ class Payment extends \Magento\Framework\DataObject
         return $installments;
     }
 
-    public function getCreditCard()
-    {
-        $token = $this->getInfo()->getAdditionalInformation('cc_token');
-
-        if (empty($token) || $token == \Az2009\Cielo\Helper\Data::CARD_TOKEN) {
-            return $this->getCreditCardNew();
-        }
-
-        return $this->getCreditCardSaved();
-    }
-
-    public function isSaveCard()
-    {
-        if (!$this->helper->_session->isLoggedIn()) {
-            return false;
-        }
-
-        $isSave = $this->getPayment()->getConfigData('can_save_cc', $this->order->getStoreId());
-        return (boolean)$isSave;
-    }
-
     /**
-     * mock data credit card new
-     * @return array
+     * mock data date due of card
+     * @return string
      */
-    public function getCreditCardNew()
+    public function getExpMonth()
     {
-        return [
-            'CardNumber' => $this->getInfo()->getAdditionalInformation('cc_number'),
-            'Holder' => $this->getInfo()->getAdditionalInformation('cc_name'),
-            'ExpirationDate' => $this->getExpDate(),
-            'SecurityCode' => $this->getInfo()->getAdditionalInformation('cc_cid'),
-            'SaveCard' => $this->isSaveCard(),
-            'Brand' => $this->_cctype->getBrandFormatCielo($this->getInfo()->getAdditionalInformation('cc_type'))
-        ];
-    }
-
-    /**
-     * mock data credit card saved
-     * @return array
-     */
-    public function getCreditCardSaved()
-    {
-        return [
-            'CardToken' => $this->getInfo()->getAdditionalInformation('cc_token'),
-            'SaveCard' => false,
-            'SecurityCode' => $this->getInfo()->getAdditionalInformation('cc_cid'),
-            'Brand' => $this->_cctype->getBrandFormatCielo($this->getInfo()->getAdditionalInformation('cc_type'))
-        ];
+        return $this->getInfo()->getAdditionalInformation('cc_exp_month');
     }
 
     /**
      * mock data date due of card
      * @return string
      */
-    public function getExpDate()
+    public function getExpYear()
     {
-        $date = [
-            $this->getInfo()->getAdditionalInformation('cc_exp_month'),
-            $this->getInfo()->getAdditionalInformation('cc_exp_year')
-        ];
-
-        return implode('/', $date);
+        return $this->getInfo()->getAdditionalInformation('cc_exp_year');
     }
 
 }

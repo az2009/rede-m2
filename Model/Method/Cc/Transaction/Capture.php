@@ -51,10 +51,10 @@ class Capture extends \Az2009\Cielo\Model\Method\Transaction
         $bodyArray = $this->getBody(\Zend\Json\Json::TYPE_ARRAY);
         $paymentId = null;
 
-        if (!property_exists($this->getBody(), 'Payment') && !$payment->getLastTransId()) {
+        if (!property_exists($this->getBody(), 'authorization') && !$payment->getLastTransId()) {
             throw new \Az2009\Cielo\Exception\Cc(__('Payment not authorized'));
-        } elseif(property_exists($this->getBody(), 'Payment')) {
-            $paymentId = $this->getBody()->Payment->PaymentId;
+        } elseif(property_exists($this->getBody(), 'authorization')) {
+            $paymentId = $this->getBody()->authorization->tid;
         }
 
         if (empty($paymentId) && !$payment->getLastTransId()) {
@@ -121,8 +121,8 @@ class Capture extends \Az2009\Cielo\Model\Method\Transaction
     protected function _getCapturedAmount()
     {
         $bodyArray = $this->getBody(\Zend\Json\Json::TYPE_ARRAY);
-        if (!isset($bodyArray['Payment']['CapturedAmount'])
-            || !($capturedAmount = floatval($bodyArray['Payment']['CapturedAmount']))
+        if (!isset($bodyArray['capture']['amount'])
+            || !($capturedAmount = floatval($bodyArray['capture']['amount']))
         ) {
             throw new \Exception(
                 __(

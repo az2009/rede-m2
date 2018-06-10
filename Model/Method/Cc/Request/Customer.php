@@ -69,6 +69,7 @@ class Customer extends \Magento\Framework\DataObject
 
         $this->setPayment($payment);
 
+        return;
         return $this->setData(
                         [
                             'Customer' => [

@@ -70,6 +70,7 @@ class Index extends \Magento\Framework\App\Action\Action
                 }
 
                 $postback->setPaymentId($this->_paymentId)
+                         ->setIsBackground(true)
                          ->process();
 
                 $response->setHttpResponseCode(200);

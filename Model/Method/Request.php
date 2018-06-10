@@ -86,9 +86,8 @@ abstract class Request extends \Magento\Framework\DataObject
     public function merge()
     {
         $merchantOrderId = $this->getMerchantOrderId();
-        $customer = $this->getCustomer();
         $payment = $this->getPayment();
-        return array_merge($merchantOrderId, $customer, $payment);
+        return array_merge($merchantOrderId, $payment);
     }
 
     /**
@@ -117,7 +116,7 @@ abstract class Request extends \Magento\Framework\DataObject
     public function getMerchantOrderId()
     {
         return  [
-            'MerchantOrderId' => $this->getOrder()->getIncrementId()
+            'reference' => $this->getOrder()->getIncrementId()
         ];
     }
 }

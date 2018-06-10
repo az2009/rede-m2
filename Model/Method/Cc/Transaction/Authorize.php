@@ -47,11 +47,11 @@ class Authorize extends \Az2009\Cielo\Model\Method\Transaction
         $payment = $this->getPayment();
         $bodyArray = $this->getBody(\Zend\Json\Json::TYPE_ARRAY);
 
-        if (!property_exists($this->getBody(), 'Payment')) {
+        if (!property_exists($this->getBody(), 'authorization')) {
             throw new \Az2009\Cielo\Exception\Cc(__('Payment not authorized'));
         }
 
-        $paymentId = $this->getBody()->Payment->PaymentId;
+        $paymentId = $this->getBody()->authorization->tid;
 
         if (empty($paymentId)) {
             throw new \Az2009\Cielo\Exception\Cc(__('Payment not authorized'));
@@ -91,8 +91,8 @@ class Authorize extends \Az2009\Cielo\Model\Method\Transaction
     protected function _getAuthorizedAmount()
     {
         $bodyArray = $this->getBody(\Zend\Json\Json::TYPE_ARRAY);
-        if (!isset($bodyArray['Payment']['Amount'])
-            || !($authorizeAmount = doubleval($bodyArray['Payment']['Amount']))
+        if (!isset($bodyArray['authorization']['amount'])
+            || !($authorizeAmount = doubleval($bodyArray['authorization']['amount']))
         ) {
             throw new \Exception(
                 __(

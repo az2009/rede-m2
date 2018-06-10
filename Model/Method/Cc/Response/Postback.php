@@ -42,28 +42,30 @@ class Postback extends \Az2009\Cielo\Model\Method\Cc\Response\Payment
         }
 
         switch ($this->getStatus()) {
-            case Payment::STATUS_AUTHORIZED:
-                $this->_authorize
-                    ->setPayment($this->getPayment())
-                    ->setResponse($this->getResponse())
-                    ->setPostback(true)
-                    ->process();
-            break;
             case Payment::STATUS_CAPTURED:
                 $this->_capture
                      ->setPayment($this->getPayment())
                      ->setResponse($this->getResponse())
-                     ->setPostback(true)
+                     ->setPostback($this->getFlagProcessFront())
                      ->process();
             break;
-            case Payment::STATUS_CANCELED_DENIED:
-            case Payment::STATUS_CANCELED_ABORTED:
-            case Payment::STATUS_CANCELED_AFTER:
             case Payment::STATUS_CANCELED:
                 $this->_cancel
                     ->setPayment($this->getPayment())
                     ->setResponse($this->getResponse())
-                    ->setPostback(true)
+                    ->setPostback($this->getIsBackground())
+                    ->process();
+            break;
+            case Payment::STATUS_PENDING:
+                $this->_pending
+                    ->setPayment($this->getPayment())
+                    ->setResponse($this->getResponse())
+                    ->process();
+            break;
+            case !$this->getIsBackground():
+                $this->_unauthorized
+                    ->setPayment($this->getPayment())
+                    ->setResponse($this->getResponse())
                     ->process();
             break;
         }
@@ -90,12 +92,26 @@ class Postback extends \Az2009\Cielo\Model\Method\Cc\Response\Payment
      */
     protected function _getMerchantOrderId()
     {
-        $response = $this->getBody();
-        if (!property_exists($response, 'MerchantOrderId')) {
-            throw new \Exception(__('Proper MerchantOrderId not found'));
+        $body = $this->getBody(\Zend\Json\Json::TYPE_ARRAY);
+        if (!isset($body['authorization']['reference'])) {
+            throw new \Exception(__('Proper reference not found'));
         }
 
-        return $response->MerchantOrderId;
+        return $body['authorization']['reference'];
     }
 
+    /**
+     * get status payment
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getStatus()
+    {
+        $body = $this->getBody(\Zend\Json\Json::TYPE_ARRAY);
+        if (!isset($body['authorization']['status'])) {
+            throw new \Exception(__('Status transaction not found'));
+        }
+
+        return $body['authorization']['status'];
+    }
 }

@@ -30,6 +30,7 @@ class Payment extends \Az2009\Cielo\Controller\Postback\Index
                 }
 
                 $postback->setPaymentId($this->_paymentId)
+                         ->setIsBackground(true)
                          ->process();
 
                 if ($this->registry->registry('payment_captured')) {

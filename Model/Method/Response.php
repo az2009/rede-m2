@@ -21,7 +21,7 @@ class Response extends \Magento\Framework\DataObject
     /**
      * @var array
      */
-    protected $_requestStatusAllowed = [201, 200];
+    protected $_requestStatusAllowed = [201, 200, 400, 300];
 
     public function process()
     {

@@ -278,18 +278,13 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
      */
     public function getClient()
     {
-        $this->keyRequest = $this->helper->getKeyRequest();
-
         return $this->httpClientFactory
             ->setUri($this->getUri())
-            ->setHeaders(
-                [
-                    'Content-Type' => 'application/json',
-                    'MerchantId' => $this->helper->getMerchantId(),
-                    'MerchantKey' => $this->helper->getMerchantKey(),
-                    'RequestId' => $this->keyRequest,
-                ]
-            );
+            ->setAuth(
+                $this->helper->getMerchantId(),
+                $this->helper->getMerchantKey()
+            )
+            ->setHeaders(['Content-Type' => 'application/json']);
     }
 
     /**

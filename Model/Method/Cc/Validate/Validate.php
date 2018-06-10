@@ -47,10 +47,6 @@ class Validate extends \Az2009\Cielo\Model\Method\Validate
              ->setPayment($this->getPayment())
              ->validate();
 
-        $this->_customer
-             ->setPayment($this->getPayment())
-             ->validate();
-
         $this->_payment
              ->setPayment($this->getPayment())
              ->validate();

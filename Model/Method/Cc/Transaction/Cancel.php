@@ -32,10 +32,10 @@ class Cancel extends \Az2009\Cielo\Model\Method\Transaction
         $paymentId = '';
         $order = $payment->getOrder();
 
-        if (!property_exists($this->getBody(), 'Payment') && !$payment->getLastTransId()) {
+        if (!property_exists($this->getBody(), 'authorization') && !$payment->getLastTransId()) {
             throw new \Az2009\Cielo\Exception\Cc(__('Payment not authorized'));
-        } elseif(property_exists($this->getBody(), 'Payment')) {
-            $paymentId = $this->getBody()->Payment->PaymentId;
+        } elseif(property_exists($this->getBody(), 'authorization')) {
+            $paymentId = $this->getBody()->authorization->tid;
         }
 
         if (empty($paymentId) && !$payment->getLastTransId()) {
@@ -79,8 +79,8 @@ class Cancel extends \Az2009\Cielo\Model\Method\Transaction
     protected function _getVoidedAmount()
     {
         $bodyArray = $this->getBody(\Zend\Json\Json::TYPE_ARRAY);
-        if (!isset($bodyArray['Payment']['VoidedAmount'])
-            || !($authorizeAmount = doubleval($bodyArray['Payment']['VoidedAmount']))
+        if (!isset($bodyArray['refunds']['amount'])
+            || !($authorizeAmount = doubleval($bodyArray['refunds']['amount']))
         ) {
             $authorizeAmount = $this->getPayment()->getAmount();
             if ($this->getPayment()->getActionCancel() && (int)$this->getPayment()->getAmount() <= 0) {

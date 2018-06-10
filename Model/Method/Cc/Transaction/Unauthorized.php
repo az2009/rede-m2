@@ -38,8 +38,8 @@ class Unauthorized extends \Az2009\Cielo\Model\Method\Transaction
 
         $message = __('Unauthorized Payment Action');
 
-        if (isset($bodyArray['Payment']['ReturnMessage'])) {
-            $message = $bodyArray['Payment']['ReturnMessage'];
+        if (isset($bodyArray['authorization']['returnMessage'])) {
+            $message = $bodyArray['authorization']['returnMessage'];
         }
 
         throw new \Az2009\Cielo\Exception\Cc(
