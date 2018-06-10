@@ -63,6 +63,7 @@ class Cancel extends \Az2009\Cielo\Model\Method\Transaction
 
         $payment->setIsTransactionClosed(true);
         if($isPaymentReview) {
+            $payment->registerRefundNotification($this->_getVoidedAmount());
             $order->registerCancellation();
         }
 

@@ -40,7 +40,7 @@ class Cc extends \Az2009\Cielo\Model\Method\AbstractMethod
     /**
      * @var bool
      */
-    protected $_canCapturePartial = true;
+    protected $_canCapturePartial = false;
 
     /**
      * @var bool
@@ -50,7 +50,7 @@ class Cc extends \Az2009\Cielo\Model\Method\AbstractMethod
     /**
      * @var bool
      */
-    protected $_canRefundInvoicePartial = true;
+    protected $_canRefundInvoicePartial = false;
 
     /**
      * @var bool

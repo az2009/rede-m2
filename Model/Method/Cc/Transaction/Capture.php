@@ -70,6 +70,10 @@ class Capture extends \Az2009\Cielo\Model\Method\Transaction
         if (!$payment->getLastTransId() && !empty($paymentId)) {
             $payment->setTransactionId($paymentId)
                     ->setLastTransId($paymentId);
+            $payment->setAdditionalInformation(
+                'transaction_authorization',
+                $paymentId
+            );
         } else {
             $payment->setParentTransactionId(
                 $payment->getAdditionalInformation('transaction_authorization')
@@ -118,6 +122,7 @@ class Capture extends \Az2009\Cielo\Model\Method\Transaction
     protected function _getCapturedAmount()
     {
         $bodyArray = $this->getBody(\Zend\Json\Json::TYPE_ARRAY);
+        $bodyArray['capture']['amount'] = 5;
         if (!isset($bodyArray['capture']['amount'])
             || !($capturedAmount = floatval($bodyArray['capture']['amount']))
         ) {
