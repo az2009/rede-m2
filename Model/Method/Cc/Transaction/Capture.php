@@ -94,10 +94,7 @@ class Capture extends \Az2009\Cielo\Model\Method\Transaction
             $this->messageManager->addNotice(__($msg));
         }
 
-        $this->saveCardToken();
-
         $this->addReturnMessageToTransaction($bodyArray);
-
         if ($this->getPostback() && !$this->isCompleteCaptured()) {
             $payment->registerCaptureNotification($this->_getCapturedAmount());
             $payment->getOrder()->save();
@@ -134,5 +131,4 @@ class Capture extends \Az2009\Cielo\Model\Method\Transaction
 
         return $capturedAmount;
     }
-
 }

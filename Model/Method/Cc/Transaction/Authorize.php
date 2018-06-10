@@ -75,10 +75,7 @@ class Authorize extends \Az2009\Cielo\Model\Method\Transaction
 
         $payment->setIsTransactionClosed(false);
 
-        $this->saveCardToken();
-
         $this->addReturnMessageToTransaction($bodyArray);
-
         if ($this->getPostback()) {
             $payment->registerAuthorizationNotification($this->_getAuthorizedAmount());
             $payment->getOrder()

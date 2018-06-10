@@ -42,6 +42,8 @@ class Cancel extends \Az2009\Cielo\Model\Method\Transaction
             throw new \Az2009\Cielo\Exception\Cc(__('Payment not authorized'));
         }
 
+        $isPaymentReview = $order->isPaymentReview();
+
         //check if is the first capture of order
         if (!$payment->getLastTransId() && !empty($paymentId)) {
             $payment->setTransactionId($paymentId)
@@ -60,17 +62,16 @@ class Cancel extends \Az2009\Cielo\Model\Method\Transaction
         );
 
         $payment->setIsTransactionClosed(true);
-
-        if ($order->canCancel()) {
-            $payment->registerRefundNotification($this->_getVoidedAmount());
+        if($isPaymentReview) {
             $order->registerCancellation();
         }
 
-        if ($order->canCreditmemo()) {
+        if($order->canCreditmemo()) {
             $payment->registerRefundNotification($this->_getVoidedAmount());
         }
 
         $order->save();
+
         $this->addReturnMessageToTransaction($bodyArray);
 
         return $this;

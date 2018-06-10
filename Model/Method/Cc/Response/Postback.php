@@ -49,6 +49,7 @@ class Postback extends \Az2009\Cielo\Model\Method\Cc\Response\Payment
                      ->setPostback($this->getFlagProcessFront())
                      ->process();
             break;
+            case Payment::STATUS_CANCELED_DENIED && $this->getIsBackground():
             case Payment::STATUS_CANCELED:
                 $this->_cancel
                     ->setPayment($this->getPayment())
@@ -62,7 +63,7 @@ class Postback extends \Az2009\Cielo\Model\Method\Cc\Response\Payment
                     ->setResponse($this->getResponse())
                     ->process();
             break;
-            case !$this->getIsBackground():
+            default:
                 $this->_unauthorized
                     ->setPayment($this->getPayment())
                     ->setResponse($this->getResponse())
@@ -107,6 +108,7 @@ class Postback extends \Az2009\Cielo\Model\Method\Cc\Response\Payment
      */
     public function getStatus()
     {
+        return 'Canceled';
         $body = $this->getBody(\Zend\Json\Json::TYPE_ARRAY);
         if (!isset($body['authorization']['status'])) {
             throw new \Exception(__('Status transaction not found'));

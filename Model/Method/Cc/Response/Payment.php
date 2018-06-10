@@ -22,6 +22,8 @@ class Payment extends \Az2009\Cielo\Model\Method\Response
 
     const STATUS_PENDING = 'Pending';
 
+    const STATUS_CANCELED_DENIED ='Denied';
+
     /**
      * @var \Az2009\Cielo\Model\Method\Cc\Transaction\Authorize
      */
