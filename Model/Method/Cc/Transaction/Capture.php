@@ -61,11 +61,6 @@ class Capture extends \Az2009\Cielo\Model\Method\Transaction
             throw new \Az2009\Cielo\Exception\Cc(__('Payment not authorized'));
         }
 
-        if ($this->isCompleteCaptured()) {
-            $this->_registry->register('payment_captured', true);
-            return $this;
-        }
-
         //check if is the first capture of order
         if (!$payment->getLastTransId() && !empty($paymentId)) {
             $payment->setTransactionId($paymentId)
@@ -89,18 +84,9 @@ class Capture extends \Az2009\Cielo\Model\Method\Transaction
 
         $payment->setIsTransactionClosed(true);
 
-        if ($payment->getCapturePartial()) {
-            $msg = '*Obs: To capture partial:';
-            $msg .= 'Cielo only supports one partial or full capture.';
-            $msg .= 'On the next capture for this request.';
-            $msg .= 'Capture offline at the store and online at Cielo\'s backoffice.';
-
-            $this->messageManager->addNotice(__($msg));
-        }
-
         $this->addReturnMessageToTransaction($bodyArray);
-        if ($this->getPostback() && !$this->isCompleteCaptured()) {
-            $payment->registerCaptureNotification($this->_getCapturedAmount());
+        if ($this->getPostback()) {
+            $payment->registerCaptureNotification($this->_getCapturedAmount(), true);
             $payment->getOrder()->save();
         }
 
@@ -109,22 +95,11 @@ class Capture extends \Az2009\Cielo\Model\Method\Transaction
         return $this;
     }
 
-    /**
-     * check if the order are full capture
-     * @return bool
-     */
-    protected function isCompleteCaptured()
-    {
-        $payment = $this->getPayment();
-        return $payment->getAmountPaid() == $payment->getAmountAuthorized();
-    }
-
     protected function _getCapturedAmount()
     {
         $bodyArray = $this->getBody(\Zend\Json\Json::TYPE_ARRAY);
-        $bodyArray['capture']['amount'] = 5;
         if (!isset($bodyArray['capture']['amount'])
-            || !($capturedAmount = floatval($bodyArray['capture']['amount']))
+            || !($captureAmount = doubleval($bodyArray['capture']['amount']))
         ) {
             throw new \Exception(
                 __(
@@ -134,6 +109,6 @@ class Capture extends \Az2009\Cielo\Model\Method\Transaction
             );
         }
 
-        return $capturedAmount;
+        return $this->helper->convertToPrice($captureAmount);
     }
 }

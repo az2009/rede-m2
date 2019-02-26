@@ -99,7 +99,7 @@ class Authorize extends \Az2009\Cielo\Model\Method\Transaction
             );
         }
 
-        return $authorizeAmount;
+        return $this->helper->convertToPrice($authorizeAmount);
     }
 
 }

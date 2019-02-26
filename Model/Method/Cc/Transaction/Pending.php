@@ -56,7 +56,6 @@ class Pending extends \Az2009\Cielo\Model\Method\Transaction
             $this->getTransactionData()
         );
 
-        $payment->setIsTransactionClosed(true);
         $payment->setIsTransactionPending(true);
         $this->addReturnMessageToTransaction($bodyArray);
         $payment->addTransaction(\Magento\Sales\Model\Order\Payment\Transaction::TYPE_ORDER);

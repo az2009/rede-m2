@@ -31,6 +31,7 @@ class Update extends AbstractController
             }
 
             $paymentId = $order->getPayment()->getLastTransId();
+            $paymentId = $this->helper->sanitizeUri($paymentId);
             $postback = $this->helper->getPostbackByTransId($paymentId);
 
             if (!($postback instanceof \Az2009\Cielo\Model\Method\AbstractMethod)) {
@@ -38,6 +39,7 @@ class Update extends AbstractController
             }
 
             $postback->setPaymentId($paymentId)
+                     ->setIsBackground(true)
                      ->process();
 
             $this->helper->getMessage()->addSuccess(__('Update Payment'));

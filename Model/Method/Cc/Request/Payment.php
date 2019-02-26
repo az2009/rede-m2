@@ -64,7 +64,7 @@ class Payment extends \Magento\Framework\DataObject
         return $this->setData(
                         [
                            'kind' => Payment::TYPE,
-                           'Amount' => $info->getAmount(),
+                           'Amount' => $this->helper->formatNumber($info->getAmount()),
                            'installments' => $this->getInstallments(),
                            'capture' => $info->getAdditionalInformation('can_capture'),
                            'softDescriptor' => $this->helper->prepareString($this->getSoftDescriptor(), 13, 0),

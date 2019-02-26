@@ -49,7 +49,7 @@ class Postback extends \Az2009\Cielo\Model\Method\Cc\Response\Payment
                      ->setPostback($this->getIsBackground())
                      ->process();
             break;
-            case Payment::STATUS_CANCELED_DENIED && $this->getIsBackground():
+            case Payment::STATUS_CANCELED_DENIED:
             case Payment::STATUS_CANCELED:
                 $this->_cancel
                     ->setPayment($this->getPayment())

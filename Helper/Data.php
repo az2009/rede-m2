@@ -516,4 +516,33 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     {
         return $this->_countryIso->getCountryCodeAlpha3($state);
     }
+
+    /**
+     * Convert real to cents
+     *
+     * @param $amount
+     *
+     * @return int
+     */
+    public function formatNumber($amount)
+    {
+        return (int)number_format($amount, 2, '', '');
+    }
+
+    public function convertToPrice($amount)
+    {
+        return number_format($amount/100, 2, '.', '');
+    }
+
+    /**
+     * Formt
+     *
+     * @param $price
+     *
+     * @return string
+     */
+    public function formatPrice($price)
+    {
+        return $this->_order->getOrderCurrency()->formatPrecision($price, 2, [], false);
+    }
 }

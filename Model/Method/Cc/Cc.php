@@ -122,6 +122,21 @@ class Cc extends \Az2009\Cielo\Model\Method\AbstractMethod
     }
 
     /**
+     * Cancel payment abstract method
+     *
+     * @param \Magento\Framework\DataObject|InfoInterface $payment
+     * @return $this
+     * @api
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @deprecated 100.2.0
+     */
+    public function cancel(\Magento\Payment\Model\InfoInterface $payment)
+    {
+        parent::cancel($payment);
+        $payment->setAdditionalInformation('cc_cid', '');
+    }
+
+    /**
      * @param \Magento\Payment\Model\InfoInterface $payment
      * @param float $amount
      */

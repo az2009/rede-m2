@@ -132,12 +132,6 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
     public function refund(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
         $this->setAmount($payment, $amount);
-        if ($amount != $payment->getAmountAuthorized()) {
-            $payment->setRefundPartial(true);
-            $this->getClient()
-                ->setParameterGet('amount', $amount);
-        }
-
         self::void($payment);
     }
 
@@ -159,8 +153,8 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
     public function void(\Magento\Payment\Model\InfoInterface $payment)
     {
         $payment->setActionCancel(true);
-        $this->setPath($payment->getLastTransId(), 'void')
-            ->put()
+        $this->setPath($payment->getLastTransId(), 'refunds')
+            ->post()
             ->request();
 
         return $this;
@@ -194,36 +188,16 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
     {
         //set value that are being captured
         $this->setAmount($payment, $amount);
-        if (is_null($this->getRunValidate())) {
-            $this->setRunValidate(true);
-        }
 
         //check if operation have transaction authorize
         if ($payment->getLastTransId() && $payment->getOrder()->getTotalDue()) {
+            $params = json_encode(['Amount' => $this->helper->formatNumber($amount)]);
             $this->setRunValidate(false);
-            $this->setPath($payment->getLastTransId(), 'capture')
-                ->put();
-
-            if ($amount != $payment->getAmountAuthorized()) {
-                $payment->setCapturePartial(true);
-                $this->getClient()
-                    ->setParameterGet('amount', $amount);
-            }
-
+            $this->setPath($payment->getLastTransId(), '')
+                 ->put($params);
         } else {
-
-            //check if transaction has value captured
-            if ($payment->getOrder()->getTotalPaid() > 0) {
-                $msg = 'The request has already been captured. Cielo only supports one partial or full capture.';
-                $msg .= 'A catch is already created for this request.';
-                $msg .= 'Capture offline at the store and online at Cielo\'s backoffice.';
-
-                throw new \Az2009\Cielo\Exception\Cc(__($msg));
-            }
-
             $payment->setAdditionalInformation('can_capture', true);
             $this->post();
-
         }
 
         $this->request();
@@ -304,11 +278,14 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
      *
      * @return $this
      */
-    public function put()
+    public function put($paramsJson = '')
     {
-        $params = $this->getParams();
+        if (empty($paramsJson)) {
+            $paramsJson = $this->getParams();
+        }
+
         $this->getClient()
-            ->setRawData($params)
+            ->setRawData($paramsJson)
             ->setMethod(\Magento\Framework\HTTP\ZendClient::PUT);
 
         return $this;

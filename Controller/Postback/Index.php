@@ -59,9 +59,7 @@ class Index extends \Magento\Framework\App\Action\Action
         $response = $this->getResponse();
         $response->setHttpResponseCode(403);
         $msg = '';
-        if ($this->_isValid()
-            && $this->_changeType == \Az2009\Cielo\Helper\Data::CHANGE_TYPE
-        ) {
+        if ($this->_isValid()) {
             try {
 
                 $postback = $this->helper->getPostbackByTransId($this->_paymentId);
@@ -95,9 +93,9 @@ class Index extends \Magento\Framework\App\Action\Action
     {
         $request = $this->getRequest();
 
-         if(/*!$request->isPost()
-            ||*/ !($this->_paymentId = $request->getParam('PaymentId'))
-            || !($this->_changeType = $request->getParam('ChangeType'))
+         if(!$request->isPost()
+            || !($this->_paymentId = $request->getParam('tid'))
+
         ) {
             return false;
         }

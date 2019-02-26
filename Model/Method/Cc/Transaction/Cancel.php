@@ -63,7 +63,6 @@ class Cancel extends \Az2009\Cielo\Model\Method\Transaction
 
         $payment->setIsTransactionClosed(true);
         if($isPaymentReview) {
-            $payment->registerRefundNotification($this->_getVoidedAmount());
             $order->registerCancellation();
         }
 
@@ -80,16 +79,6 @@ class Cancel extends \Az2009\Cielo\Model\Method\Transaction
 
     protected function _getVoidedAmount()
     {
-        $bodyArray = $this->getBody(\Zend\Json\Json::TYPE_ARRAY);
-        if (!isset($bodyArray['refunds']['amount'])
-            || !($authorizeAmount = doubleval($bodyArray['refunds']['amount']))
-        ) {
-            $authorizeAmount = $this->getPayment()->getAmount();
-            if ($this->getPayment()->getActionCancel() && (int)$this->getPayment()->getAmount() <= 0) {
-                $authorizeAmount = $this->getPayment()->getAmountPaid() ?: $this->getPayment()->getAmountAuthorized();
-            }
-        }
-
-        return $authorizeAmount;
+        return $this->getPayment()->getAmountOrdered();
     }
 }
