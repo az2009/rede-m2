@@ -39,23 +39,6 @@
                 <cctypes>AE,VI,MC,DI,JCB,DN,ELO,HIC</cctypes>
                 <allowspecific>0</allowspecific>
             </az2009_cielo>
-            <az2009_cielo_bank_slip>
-                <active>0</active>
-                <model>Az2009\Cielo\Model\Method\BankSlip\BankSlip</model>
-                <order_status>pending</order_status>
-                <title>Bank Slip Cielo</title>
-                <allowspecific>1</allowspecific>
-                <specificcountry>BR</specificcountry>
-                <sort_order>2</sort_order>
-                <payment_action>authorize</payment_action>
-                <provider>Bradesco2</provider>
-                <additional_days>3</additional_days>
-                <boleto_number>123</boleto_number>
-                <demonstrative>Demonstrative Info</demonstrative>
-                <assignor>Assignor Name</assignor>
-                <assignor_address>Assignor Address Info</assignor_address>
-                <instructions>Instructions Info</instructions>
-            </az2009_cielo_bank_slip>
             <az2009_cielo_dc>
                 <active>0</active>
                 <model>Az2009\Cielo\Model\Method\Dc\Dc</model>
