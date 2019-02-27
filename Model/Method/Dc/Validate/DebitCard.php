@@ -34,19 +34,23 @@ class DebitCard extends \Az2009\Cielo\Model\Method\Cc\Validate\CreditCard
      * @var array
      */
     protected $_fieldsValidate = [
-        'CardNumber' => [
+        'cardNumber' => [
             'required' => true,
             'maxlength' => 19,
         ],
-        'Holder' => [
+        'cardHolderName' => [
             'required' => true,
-            'maxlength' => 25,
+            'maxlength' => 30,
         ],
-        'ExpirationDate' => [
+        'expirationMonth' => [
             'required' => true,
-            'maxlength' => 7,
+            'maxlength' => 2,
         ],
-        'SecurityCode' => [
+        'expirationYear' => [
+            'required' => true,
+            'maxlength' => 4,
+        ],
+        'securityCode' => [
             'required' => true,
             'maxlength' => 4,
         ],
@@ -54,6 +58,7 @@ class DebitCard extends \Az2009\Cielo\Model\Method\Cc\Validate\CreditCard
             'required' => true,
             'maxlength' => 10,
         ]
+
     ];
 
     /**
@@ -76,16 +81,12 @@ class DebitCard extends \Az2009\Cielo\Model\Method\Cc\Validate\CreditCard
      */
     public function validate()
     {
-        if ($this->isToken()) {
-            $this->getFieldsWhenToken();
-        }
-
         $params = $this->getRequest();
-        if (!isset($params['Payment']['DebitCard'])) {
+        if (!isset($params['cardNumber'])) {
             throw new \Az2009\Cielo\Exception\Cc(__('Invalid Debit Card Info'));
         }
 
-        $creditCard = $params['Payment']['DebitCard'];
+        $creditCard = $params;
         foreach ($creditCard as $k => $v) {
             $this->required($k,$v, __('Debit Card: '));
             $this->maxLength($k,$v, __('Debit Card: '));
@@ -104,9 +105,8 @@ class DebitCard extends \Az2009\Cielo\Model\Method\Cc\Validate\CreditCard
      */
     public function isValidCreditCard(Array $creditCard)
     {
-        if (!$this->isToken()
-            && !preg_match(
-                $this->_ccTypeRegExpList[$creditCard['Brand']], $creditCard['CardNumber']
+        if (!preg_match(
+                $this->_ccTypeRegExpList[$creditCard['Brand']], $creditCard['cardNumber']
             )
         ) {
             throw new \Az2009\Cielo\Exception\Cc(__('Invalid Debit Card'));

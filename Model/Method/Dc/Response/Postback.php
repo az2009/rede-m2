@@ -34,7 +34,6 @@ class Postback extends \Az2009\Cielo\Model\Method\Cc\Response\Postback
         }
 
         switch ($this->getStatus()) {
-            case Payment::STATUS_AUTHORIZED:
             case Payment::STATUS_CAPTURED:
                 $this->_capture
                     ->setPayment($this->getPayment())
@@ -43,8 +42,6 @@ class Postback extends \Az2009\Cielo\Model\Method\Cc\Response\Postback
                     ->process();
             break;
             case Payment::STATUS_CANCELED_DENIED:
-            case Payment::STATUS_CANCELED_ABORTED:
-            case Payment::STATUS_CANCELED_AFTER:
             case Payment::STATUS_CANCELED:
                 $this->_cancel
                     ->setPayment($this->getPayment())

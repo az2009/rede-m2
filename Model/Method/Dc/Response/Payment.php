@@ -32,32 +32,14 @@ class Payment extends \Az2009\Cielo\Model\Method\Cc\Response\Payment
             $this->_getPaymentInstance();
         }
 
-        switch ($this->getStatus()) {
-            case Payment::STATUS_AUTHORIZED:
-            case Payment::STATUS_CAPTURED:
-                $this->_capture
-                    ->setPayment($this->getPayment())
-                    ->setResponse($this->getResponse())
-                    ->setPostback(true)
-                    ->process();
-            break;
-            case Payment::STATUS_PAYMENT_REVIEW:
-            case Payment::STATUS_PENDING:
-                $this->_pending
-                    ->setPayment($this->getPayment())
-                    ->setResponse($this->getResponse())
-                    ->process();
-            break;
-            case Payment::STATUS_CANCELED_DENIED:
-            case Payment::STATUS_CANCELED_ABORTED:
-            case Payment::STATUS_CANCELED_AFTER:
-            case Payment::STATUS_CANCELED:
-                $this->_cancel
-                    ->setPayment($this->getPayment())
-                    ->setResponse($this->getResponse())
-                    ->setPostback(true)
-                    ->process();
-            break;
+        $body = $this->getBody(\Zend\Json\Json::TYPE_ARRAY);
+        if (!isset($body['threeDSecure']['url'])) {
+            throw new \Exception(__('Invalid url authenticate'));
         }
+
+        $this->_pending
+            ->setPayment($this->getPayment())
+            ->setResponse($this->getResponse())
+            ->process();
     }
 }

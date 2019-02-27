@@ -53,6 +53,10 @@ class CreditCard extends \Az2009\Cielo\Model\Method\Validate
         'securityCode' => [
             'required' => true,
             'maxlength' => 4,
+        ],
+        'Brand' => [
+            'required' => true,
+            'maxlength' => 10,
         ]
     ];
 

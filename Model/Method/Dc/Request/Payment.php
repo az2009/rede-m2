@@ -16,14 +16,21 @@ namespace Az2009\Cielo\Model\Method\Dc\Request;
 class Payment extends \Az2009\Cielo\Model\Method\Cc\Request\Payment
 {
 
-    const TYPE = 'DebitCard';
+    const TYPE = 'debit';
+
+    /**
+     * @var \Magento\Framework\HTTP\Header
+     */
+    protected $httpHeader;
 
     public function __construct(
         \Az2009\Cielo\Model\Source\Cctype $cctype,
         \Az2009\Cielo\Helper\Dc $helper,
+        \Magento\Framework\HTTP\Header $httpHeader,
         array $data = []
     ) {
         $this->helper = $helper;
+        $this->httpHeader = $httpHeader;
         parent::__construct($cctype, $helper, $data);
     }
 
@@ -44,28 +51,37 @@ class Payment extends \Az2009\Cielo\Model\Method\Cc\Request\Payment
 
         return $this->setData(
             [
-                'Payment' => [
-                    'Type' => Payment::TYPE,
-                    'Amount' => $info->getAmount(),
-                    'Authenticate' => true,
-                    'ReturnUrl' => $this->getReturnUrl(),
-                    'DebitCard' => $this->getDebitCard(),
-                ]
+                'kind' => Payment::TYPE,
+                'Amount' => $this->helper->formatNumber($info->getAmount()),
+                'capture' => true,
+                'softDescriptor' => $this->helper->prepareString($this->getSoftDescriptor(), 13, 0),
+                'cardNumber' => $this->getInfo()->getAdditionalInformation('cc_number'),
+                'cardHolderName' => $this->getInfo()->getAdditionalInformation('cc_name'),
+                'expirationMonth' => $this->getExpMonth(),
+                'expirationYear' => $this->getExpYear(),
+                'subscription' => false,
+                'Origin' => 1,
+                'distributorAffiliation' => $this->helper->getMerchantId(),
+                'securityCode' => $this->getInfo()->getAdditionalInformation('cc_cid'),
+                'Brand' => $this->_cctype->getBrandFormatCielo($this->getInfo()->getAdditionalInformation('cc_type')),
+                'threeDSecure' => [
+                    'embedded' => true,
+                    'onFailure' => 'decline',
+                    'userAgent' => $this->httpHeader->getHttpUserAgent()
+                ],
+                'urls' =>
+                    [
+                        [
+                            'kind' => 'threeDSecureSuccess',
+                            'url'  => $this->getReturnUrl()
+                        ],
+                        [
+                            'kind' => 'threeDSecureFailure',
+                            'url'  => $this->getReturnUrl()
+                        ]
+                    ]
             ]
         )->toArray();
-    }
-
-    /**
-     * @return array
-     */
-    public function getDebitCard()
-    {
-        $debitCard =  $this->getCreditCardNew();
-        if (isset($debitCard['SaveCard'])) {
-            unset($debitCard['SaveCard']);
-        }
-
-        return $debitCard;
     }
 
     /**

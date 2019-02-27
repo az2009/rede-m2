@@ -53,11 +53,11 @@ class Index extends \Magento\Checkout\Controller\Onepage
     public function execute()
     {
         $url = 'checkout/onepage/failure/';
-        try {
+        $session = $this->getOnepage()->getCheckout();
+        $orderId = $session->getLastOrderId();
+        $order = $this->_order->load($orderId);
 
-            $session = $this->getOnepage()->getCheckout();
-            $orderId = $session->getLastOrderId();
-            $order = $this->_order->load($orderId);
+        try {
 
             if (!$order->getId()) {
                 $url = '/';
@@ -65,14 +65,11 @@ class Index extends \Magento\Checkout\Controller\Onepage
             }
 
             $payment = $order->getPayment();
-
             if ($payment->getMethod() != \Az2009\Cielo\Model\Method\Dc\Dc::CODE_PAYMENT) {
-                $url = '/';
                 throw new \Exception(__('Action not allowed to this order'));
             }
 
             $urlRedirect = $payment->getAdditionalInformation('redirect_url');
-
             if (empty($urlRedirect)) {
                 throw new \Exception(__('URL authentication not available. Try Again.'));
             }
@@ -82,6 +79,10 @@ class Index extends \Magento\Checkout\Controller\Onepage
                         ->sendResponse();
 
         } catch(\Exception $e) {
+            if ($order->getId()) {
+                $order->registerCancellation($e->getMessage())->save();
+            }
+
             $this->messageManager->addError($e->getMessage());
         }
 
