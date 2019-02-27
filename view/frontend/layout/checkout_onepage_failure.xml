@@ -23,7 +23,6 @@
         <attribute name="class" value="sales-guest-view" />
         <referenceBlock name="page.main.title">
             <block class="Magento\Sales\Block\Order\PrintShipment" name="order.status" template="Az2009_Cielo::order/order_status.phtml" />
-            <block class="Az2009\Cielo\Block\Order\Info" name="order.print.bank_slip" template="Az2009_Cielo::order/order_bank_slip.phtml" />
             <action method="setPageTitle">
                 <argument translate="true" name="title" xsi:type="string">Unauthorized Payment. Try Again.</argument>
             </action>

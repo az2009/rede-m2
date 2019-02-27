@@ -162,4 +162,5 @@ class Dc extends \Az2009\Cielo\Model\Method\AbstractMethod
 
         return true;
     }
+
 }

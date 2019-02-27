@@ -19,7 +19,7 @@
         <label class="label">
             <span><!-- ko i18n: 'Select Credit Card'--><!-- /ko --></span>
         </label>
-        <select name="payment[cc_token]" id="cc_token" class="credit-card-types" data-bind="value:creditCardSave">
+        <select style="display: none;" name="payment[cc_token]" id="cc_token" class="credit-card-types" data-bind="value:creditCardSave">
             <option class="item" selected data-bind="attr: {'value': 'new', 'label': $t('Other Credit Card')}">
                 <!-- ko i18n: 'Other Credit Card' --><!-- /ko -->
             </option>
@@ -47,7 +47,7 @@
             <label data-bind="attr: {for: getCode() + '_cc_number'}" class="label">
                 <span><!-- ko i18n: 'Credit Card Number'--><!-- /ko --></span>
             </label>
-            <input type="number" name="payment[cc_number]" class="input-text cc_number" value=""
+            <input type="number" name="payment[cc_number]" class="input-text cc_number" id="az2009_cielo_cc_number_c" value=""
                    data-bind="
                     autocomplete: off,
                     value: creditCardNumber,
@@ -87,22 +87,22 @@
                                     <!-- ko i18n: 'Month' --><!-- /ko -->
                                 </option>
                                 <!-- ko foreach: {data: getExpMonth(), as: 'month'} -->
-                                    <option class="item" data-bind="attr: {'value': month.key}">
-                                        <!-- ko i18n: month.value --><!-- /ko -->
-                                    </option>
+                                <option class="item" data-bind="attr: {'value': month.key}">
+                                    <!-- ko i18n: month.value --><!-- /ko -->
+                                </option>
                                 <!-- /ko -->
 
                             </select>
                             <select class="select select-year"
                                     name="payment[cc_exp_year]"
                                     data-bind="attr: {'data-validate': JSON.stringify({required:true})}, value: creditCardExpYear, valueUpdate: 'keyup'">
-                                    <option class="item" data-bind="attr: {'value': '', 'label': $t('Year')}">
-                                        <!-- ko i18n: 'Year' --><!-- /ko -->
-                                    </option>
+                                <option class="item" data-bind="attr: {'value': '', 'label': $t('Year')}">
+                                    <!-- ko i18n: 'Year' --><!-- /ko -->
+                                </option>
                                 <!-- ko foreach: {data: getExpYear(), as: 'year'} -->
-                                    <option class="item" data-bind="attr: {'value': year.key, 'label': year.value}">
-                                        <!-- ko i18n: year.value --><!-- /ko -->
-                                    </option>
+                                <option class="item" data-bind="attr: {'value': year.key, 'label': year.value}">
+                                    <!-- ko i18n: year.value --><!-- /ko -->
+                                </option>
                                 <!-- /ko -->
 
                             </select>
@@ -142,11 +142,7 @@
             <span><!-- ko i18n: 'Installments'--><!-- /ko --></span>
         </label>
         <select data-bind="attr: {'id': getCode() + '_cc_installments'}, value: creditCardInstallments" name="payment[cc_installments]">
-            <!-- ko foreach: {data: getInstallments(), as: 'installment'} -->
-            <option class="item" data-bind="attr: {'value': installment.key, 'label':installment.value }">
-                <!-- ko i18n: installment.value --><!-- /ko -->
-            </option>
-            <!--/ko-->
+            <option class="item"><!-- ko i18n: 'Informe o número do cartão' --><!-- /ko --></option>
         </select>
     </div>
 </div>

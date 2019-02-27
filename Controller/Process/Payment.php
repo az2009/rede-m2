@@ -124,7 +124,7 @@ class Payment extends \Az2009\Cielo\Controller\Postback\Index
     }
 
     /**
-     * Check if is request is valid
+     * Check if the transaction was authorized
      *
      * @return bool
      */

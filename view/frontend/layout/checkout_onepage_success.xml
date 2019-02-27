@@ -23,7 +23,6 @@
         <attribute name="class" value="sales-guest-view" />
         <referenceContainer name="page.main.title">
             <block class="Magento\Sales\Block\Order\PrintShipment" name="order.status" template="Az2009_Cielo::order/order_status.phtml" />
-            <block class="Az2009\Cielo\Block\Order\Info" name="order.print.bank_slip" template="Az2009_Cielo::order/order_bank_slip.phtml" />
         </referenceContainer>
         <referenceContainer name="content">
             <block class="Magento\Sales\Block\Order\PrintShipment" name="sales.order.print" template="Magento_Sales::order/view.phtml">

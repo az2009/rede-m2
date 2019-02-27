@@ -63,20 +63,6 @@
                         <field id="active">1</field>
                     </depends>
                 </field>
-                <field id="attribute_identity" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Attribute Identity</label>
-                    <source_model>Az2009\Cielo\Model\Source\CustomerAttribute</source_model>
-                    <depends>
-                        <field id="active">1</field>
-                    </depends>
-                </field>
-                <field id="can_save_cc" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Can Save Cc</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <depends>
-                        <field id="active">1</field>
-                    </depends>
-                </field>
                 <field id="payment_action" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Payment Action</label>
                     <source_model>Magento\Authorizenet\Model\Source\PaymentAction</source_model>
@@ -116,86 +102,6 @@
                     <depends>
                         <field id="active">1</field>
                     </depends>
-                </field>
-            </group>
-            <group id="az2009_cielo_bank_slip" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Cielo - Bank Slip</label>
-                <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Enable</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="title" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Title</label>
-                    <depends>
-                        <field id="active">1</field>
-                    </depends>
-                </field>
-                <field id="provider" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Provider</label>
-                    <source_model>Az2009\Cielo\Model\Source\Provider</source_model>
-                </field>
-                <field id="additional_days" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Additional Days</label>
-                    <validate>validate-zero-or-greater validate-digits</validate>
-                    <depends>
-                        <field id="active">1</field>
-                    </depends>
-                </field>
-                <field id="boleto_number" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Slip Number</label>
-                    <validate>validate-length maximum-length-9 validate-zero-or-greater validate-digits</validate>
-                    <comment>Maximum length: 9 digits</comment>
-                    <depends>
-                        <field id="active">1</field>
-                    </depends>
-                </field>
-                <field id="demonstrative" translate="label" type="textarea" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Demonstrative</label>
-                    <validate>validate-length maximum-length-255</validate>
-                    <comment>Maximum length: 255 characters</comment>
-                    <depends>
-                        <field id="active">1</field>
-                    </depends>
-                </field>
-                <field id="assignor" translate="label" type="textarea" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Assignor</label>
-                    <validate>validate-length maximum-length-200</validate>
-                    <comment>Maximum length: 200 characters</comment>
-                    <depends>
-                        <field id="active">1</field>
-                    </depends>
-                </field>
-                <field id="assignor_address" translate="label" type="textarea" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Assignor Address</label>
-                    <validate>validate-length maximum-length-255</validate>
-                    <comment>Maximum length: 255 characters</comment>
-                    <depends>
-                        <field id="active">1</field>
-                    </depends>
-                </field>
-                <field id="assignor_identification" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Assignor Identification</label>
-                    <validate>validate-length maximum-length-14</validate>
-                    <comment>Maximum length: 14 characters</comment>
-                    <depends>
-                        <field id="active">1</field>
-                    </depends>
-                </field>
-                <field id="instructions" translate="label" type="textarea" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Instructions</label>
-                    <validate>validate-length maximum-length-450</validate>
-                    <comment>Maximum length: 450 characters</comment>
-                    <depends>
-                        <field id="active">1</field>
-                    </depends>
-                </field>
-                <field id="specificcountry" translate="label" type="multiselect" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Payment from Specific Countries</label>
-                    <source_model>Az2009\Cielo\Model\Source\Country</source_model>
-                    <depends>
-                        <field id="active">1</field>
-                    </depends>
-                    <comment>Exclusive to Brazil</comment>
                 </field>
             </group>
             <group id="az2009_cielo_dc" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">

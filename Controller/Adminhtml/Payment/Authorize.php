@@ -31,6 +31,8 @@ class Authorize extends AbstractController
             }
 
             if ($order->isPaymentReview() ) {
+
+                /** @var \Magento\Sales\Model\Order\Payment $payment*/
                 $payment = $order->getPayment();
                 $transactionId = $payment->getLastTransId();
                 $payment->setParentTransactionId($transactionId);
@@ -44,12 +46,12 @@ class Authorize extends AbstractController
                     ['User' => $user]
                 );
 
-                $payment->registerCaptureNotification($payment->getAmountAuthorized());
+                $payment->registerCaptureNotification($payment->getAmountAuthorized(), true);
                 $order->addStatusHistoryComment(__('Order Captured Offline/Manual. Captured by User %1', $user));
+                $payment->setAdditionalInformation('captured_offline', true);
                 $order->save();
+                $this->helper->getMessage()->addSuccess(__('Order Captured Offline'));
             }
-
-            $this->helper->getMessage()->addSuccess(__('Order Captured Offline'));
 
         } catch (\Exception $e) {
             $this->helper->getMessage()->addError($e->getMessage());

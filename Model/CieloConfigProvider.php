@@ -77,7 +77,7 @@ implements \Magento\Checkout\Model\ConfigProviderInterface
                     'icons' => $this->getIcons(),
                     'availableTypes' => $this->getCcAvailableTypes(),
                     'availableTypesDc' => $this->getCcAvailableTypesDc(),
-                    'cards' => $this->helper->getCardSavedByCustomer(),
+                    'cards' => [],
                     'installments' => $this->getInstallmentsAvailable(),
                     'is_logged_in' => $this->helper->_session->isLoggedIn(),
                     'month' => $this->getExpMonth(),

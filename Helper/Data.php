@@ -454,6 +454,14 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function canUpdate($order)
     {
+        if (!($order instanceof \Magento\Sales\Model\Order)) {
+            return false;
+        }
+
+        if (!$order->getPayment()->getLastTransId()) {
+            return false;
+        }
+
         return $this->canCancelOffline($order);
     }
 
@@ -534,7 +542,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * Formt
+     * Format
      *
      * @param $price
      *

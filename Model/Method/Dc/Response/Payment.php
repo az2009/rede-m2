@@ -28,6 +28,10 @@ class Payment extends \Az2009\Cielo\Model\Method\Cc\Response\Payment
 
     public function process()
     {
+        if ($this->getPayment()->getLastTransId()) {
+            return parent::process();
+        }
+
         if (!$this->getPayment()) {
             $this->_getPaymentInstance();
         }
@@ -42,4 +46,5 @@ class Payment extends \Az2009\Cielo\Model\Method\Cc\Response\Payment
             ->setResponse($this->getResponse())
             ->process();
     }
+
 }
