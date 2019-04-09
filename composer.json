@@ -1,6 +1,6 @@
 {
-	"name" : "az2009/cielo",
-	"description" : "Module to integrating with gateway of payment Cielo",
+	"name" : "az2009/rede",
+	"description" : "Module to integrating with gateway of payment Rede",
 	"version" : "1.0.1",
 	"type" : "magento2-module",
 	"license" : "OSL-3.0",
@@ -18,12 +18,12 @@
 			"registration.php"
 		],
 		"psr-4" : {
-			"Az2009\\Cielo\\" : ""
+			"Az2009\\Rede\\" : ""
 		}
 	},
 	"keywords" : [
 		"magento2",
-		"cielo",
+		"rede",
 		"jbp",
 		"az2009",
 		"Jefferson Porto",
