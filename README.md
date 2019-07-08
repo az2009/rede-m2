@@ -1,16 +1,16 @@
-Configuração da chave
+<strong>Configuração da chave</strong>
  ![Configuração chave](docs/configuracao-chaves-redes.png)
 <br/>
 
-Configuração Cartão de Crédito 
+<strong>Configuração Cartão de Crédito</strong> 
   ![Configuração chave](docs/configuracao-cc-rede.png)
 <br/>
   
-Configuração Cartão de Débito
+<strong>Configuração Cartão de Débito</strong>
   ![Configuração chave](docs/configuracao-dc-rede.png)
   
 <br/>
-URL de Postback 
+<strong>URL de Postback</strong> 
   http://SUALOJA.COM.BR/index.php/rede/postback/index/
    - Recebe o parâmetro "tid"(Id da Transação)   
 <br/>
