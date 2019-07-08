@@ -15,6 +15,10 @@
    - Recebe o parâmetro "tid"(Id da Transação)   
 <br/>
 
+<strong>Cartões de Teste</strong>
+![Configuração chave](docs/view-card-test.png)
+<br/>
+
 <strong>Telas Gerais</strong>
 <br/>
 
