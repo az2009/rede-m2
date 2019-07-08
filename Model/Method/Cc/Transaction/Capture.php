@@ -83,9 +83,12 @@ class Capture extends \Az2009\Rede\Model\Method\Transaction
         );
 
         $payment->setIsTransactionClosed(true);
+        $payment->setIsTransactionPending(false);
 
         $this->addReturnMessageToTransaction($bodyArray);
         if ($this->getPostback()) {
+            $payment->getOrder()->setState(\Magento\Sales\Model\Order::STATE_PROCESSING);
+            $payment->getOrder()->setStatus(\Magento\Sales\Model\Order::STATE_PROCESSING);
             $payment->registerCaptureNotification($this->_getCapturedAmount(), true);
             $payment->getOrder()->save();
         }
