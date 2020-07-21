@@ -49,39 +49,45 @@ class Payment extends \Az2009\Rede\Model\Method\Cc\Request\Payment
         $this->setInfo($info);
         $this->setPayment($payment);
 
-        return $this->setData(
-            [
-                'kind' => Payment::TYPE,
-                'Amount' => $this->helper->formatNumber($info->getAmount()),
-                'capture' => true,
-                'softDescriptor' => $this->helper->prepareString($this->getSoftDescriptor(), 13, 0),
-                'cardNumber' => $this->getInfo()->getAdditionalInformation('cc_number'),
-                'cardHolderName' => $this->getInfo()->getAdditionalInformation('cc_name'),
-                'expirationMonth' => $this->getExpMonth(),
-                'expirationYear' => $this->getExpYear(),
-                'subscription' => false,
-                'Origin' => 1,
-                'distributorAffiliation' => $this->helper->getMerchantId(),
-                'securityCode' => $this->getInfo()->getAdditionalInformation('cc_cid'),
-                'Brand' => $this->_cctype->getBrandFormatRede($this->getInfo()->getAdditionalInformation('cc_type')),
-                'threeDSecure' => [
-                    'embedded' => true,
-                    'onFailure' => 'decline',
-                    'userAgent' => $this->httpHeader->getHttpUserAgent()
-                ],
-                'urls' =>
+        $paymentData = [
+            'kind' => Payment::TYPE,
+            'Amount' => $this->helper->formatNumber($info->getAmount()),
+            'capture' => true,
+            'cardNumber' => $this->getInfo()->getAdditionalInformation('cc_number'),
+            'cardHolderName' => $this->getInfo()->getAdditionalInformation('cc_name'),
+            'expirationMonth' => $this->getExpMonth(),
+            'expirationYear' => $this->getExpYear(),
+            'subscription' => false,
+            'Origin' => 1,
+            'distributorAffiliation' => $this->helper->getMerchantId(),
+            'securityCode' => $this->getInfo()->getAdditionalInformation('cc_cid'),
+            'Brand' => $this->_cctype->getBrandFormatRede($this->getInfo()->getAdditionalInformation('cc_type')),
+            'threeDSecure' => [
+                'embedded' => true,
+                'onFailure' => 'decline',
+                'userAgent' => $this->httpHeader->getHttpUserAgent()
+            ],
+            'urls' =>
+                [
                     [
-                        [
-                            'kind' => 'threeDSecureSuccess',
-                            'url'  => $this->getReturnUrl()
-                        ],
-                        [
-                            'kind' => 'threeDSecureFailure',
-                            'url'  => $this->getReturnUrl()
-                        ]
+                        'kind' => 'threeDSecureSuccess',
+                        'url'  => $this->getReturnUrl()
+                    ],
+                    [
+                        'kind' => 'threeDSecureFailure',
+                        'url'  => $this->getReturnUrl()
                     ]
-            ]
-        )->toArray();
+                ]
+        ];
+
+        if($this->getSoftDescriptorEnable()){
+            $softDescriptor = $this->helper->prepareString($this->getSoftDescriptor(), 13, 0);
+            if (!empty($softDescriptor)){
+                $paymentData['softDescriptor'] = $softDescriptor;
+            }
+        }
+
+        return $this->setData($paymentData)->toArray();
     }
 
     /**

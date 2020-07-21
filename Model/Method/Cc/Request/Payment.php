@@ -61,26 +61,31 @@ class Payment extends \Magento\Framework\DataObject
         $this->setInfo($info);
         $this->setPayment($payment);
 
-        return $this->setData(
-                        [
-                           'kind' => Payment::TYPE,
-                           'Amount' => $this->helper->formatNumber($info->getAmount()),
-                           'installments' => $this->getInstallments(),
-                           'capture' => $info->getAdditionalInformation('can_capture'),
-                           'softDescriptor' => $this->helper->prepareString($this->getSoftDescriptor(), 13, 0),
-                           'cardNumber' => $this->getInfo()->getAdditionalInformation('cc_number'),
-                           'cardHolderName' => $this->getInfo()->getAdditionalInformation('cc_name'),
-                           'expirationMonth' => $this->getExpMonth(),
-                           'expirationYear' => $this->getExpYear(),
-                           'subscription' => false,
-                           'Origin' => 1,
-                           'distributorAffiliation' => $this->helper->getMerchantId(),
-                           'securityCode' => $this->getInfo()->getAdditionalInformation('cc_cid'),
-                           'Brand' => $this->_cctype->getBrandFormatRede($this->getInfo()->getAdditionalInformation('cc_type'))
-                        ]
-                      )->toArray();
+        /** @var array $paymentData */
+        $paymentData = [
+            'kind' => Payment::TYPE,
+            'Amount' => $this->helper->formatNumber($info->getAmount()),
+            'installments' => $this->getInstallments(),
+            'capture' => $info->getAdditionalInformation('can_capture'),
+            'cardNumber' => $this->getInfo()->getAdditionalInformation('cc_number'),
+            'cardHolderName' => $this->getInfo()->getAdditionalInformation('cc_name'),
+            'expirationMonth' => $this->getExpMonth(),
+            'expirationYear' => $this->getExpYear(),
+            'subscription' => false,
+            'Origin' => 1,
+            'distributorAffiliation' => $this->helper->getMerchantId(),
+            'securityCode' => $this->getInfo()->getAdditionalInformation('cc_cid'),
+            'Brand' => $this->_cctype->getBrandFormatRede($this->getInfo()->getAdditionalInformation('cc_type'))
+        ];
 
+        if($this->getSoftDescriptorEnable()){
+            $softDescriptor = $this->helper->prepareString($this->getSoftDescriptor(), 13, 0);
+            if (!empty($softDescriptor)){
+                $paymentData['softDescriptor'] = $softDescriptor;
+            }
+        }
 
+        return $this->setData($paymentData)->toArray();
     }
 
     /**
@@ -95,6 +100,24 @@ class Payment extends \Magento\Framework\DataObject
                      );
 
         return $desc;
+    }
+
+    /**
+     * @return bool|string
+     */
+    public function getSoftDescriptorEnable()
+    {
+        $billing_description_active = $this->getPayment()
+            ->getConfigData(
+                'billing_description_active',
+                $this->order->getStoreId()
+            );
+
+        if (is_null($billing_description_active)){
+            $billing_description_active = false;
+        }
+
+        return $billing_description_active;
     }
 
     /**
@@ -129,5 +152,4 @@ class Payment extends \Magento\Framework\DataObject
     {
         return $this->getInfo()->getAdditionalInformation('cc_exp_year');
     }
-
 }
