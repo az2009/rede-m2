@@ -57,15 +57,31 @@
                         <field id="active">1</field>
                     </depends>
                 </field>
+                <field id="billing_description_active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Billing Description Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                    <comment>A Rede permite que o lojista envie um texto complementar que será impresso na fatura do comprador junto com a identificação do nome da loja que consta no cadastro Rede. (Serviço deve ser habilitado com a Rede)</comment>
+                </field>
                 <field id="billing_description" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Billing Description</label>
                     <depends>
                         <field id="active">1</field>
+                        <field id="billing_description_active">1</field>
                     </depends>
                 </field>
                 <field id="payment_action" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Payment Action</label>
                     <source_model>Magento\Authorizenet\Model\Source\PaymentAction</source_model>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="payment_antifraude" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Habilitar Antifraude Rede?</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <depends>
                         <field id="active">1</field>
                     </depends>
